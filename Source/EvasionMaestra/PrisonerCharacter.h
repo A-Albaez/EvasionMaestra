@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "PrisonerCharacter.generated.h"
 
+class UGrabber;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
@@ -37,6 +38,10 @@ public:
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
+
+	UPROPERTY(EditAnywhere)
+    class UGrabber* GrabberComponent;
+
 
 protected:
 	// Called when the game starts or when spawned

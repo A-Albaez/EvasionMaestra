@@ -7,6 +7,7 @@
 #include "InputAction.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Grabber.h" 
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -16,6 +17,11 @@ APrisonerCharacter::APrisonerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+  	// Crea la instancia de tu ActorComponent y adjúntala al Character
+    GrabberComponent = CreateDefaultSubobject<UGrabber>(TEXT("GrabberComponent"));
+
+	GrabberComponent->PrisonerCharacter = this;
 
 }
 
