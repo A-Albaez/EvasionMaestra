@@ -43,6 +43,10 @@ public:
     class UGrabber* GrabberComponent;
 
 
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+    void HackDoor();
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

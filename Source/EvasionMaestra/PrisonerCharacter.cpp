@@ -7,6 +7,8 @@
 #include "InputAction.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Components/SphereComponent.h"
+
 #include "Grabber.h" 
 
 
@@ -109,4 +111,10 @@ void APrisonerCharacter::Look(const FInputActionValue &Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+
+void APrisonerCharacter::HackDoor()
+{
+
 }

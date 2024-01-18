@@ -29,7 +29,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// UpdateGrabbedObject();
+	UpdateGrabbedObject();
 
 	UpdateHandReference();
 }
@@ -66,6 +66,11 @@ void UGrabber::GrabObject()
 
 				if (GrabbedObject)
 				{
+					if (Hit.GetActor()->ActorHasTag("tablet1"))
+					{
+						CanHackDoor = true;
+					}
+					
 					UE_LOG(LogTemp, Warning, TEXT("Objeto agarrado: %s"), *GrabbedObject->GetName());
 				}
 				else
@@ -111,7 +116,7 @@ void UGrabber::UpdateGrabbedObject()
 
 	{
 		// Get the target location and rotation of the grabbed object from the socket
-		FVector Location = Hand->GetSocketLocation(RightHandSocketName) + Hand->GetForwardVector() * GrabDistance;
+		FVector Location = Hand->GetSocketLocation(RightHandSocketName);
 		FRotator Rotation = Hand->GetSocketRotation(RightHandSocketName);
 
 		// Set the location and rotation of the grabbed object

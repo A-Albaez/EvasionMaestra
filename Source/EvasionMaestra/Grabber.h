@@ -38,6 +38,9 @@ public:
 
 	const FName RightHandSocketName;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
+	bool CanHackDoor;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
