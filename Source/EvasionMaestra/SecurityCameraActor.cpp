@@ -1,6 +1,7 @@
 #include "SecurityCameraActor.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Actor.h"
+#include "Components/TimelineComponent.h"
 #include "Engine/World.h"
 
 ASecurityCameraActor::ASecurityCameraActor()
@@ -11,26 +12,40 @@ ASecurityCameraActor::ASecurityCameraActor()
     CameraComponent = FindComponentByClass<UCameraComponent>();
 
     RotationSpeed = 15.0f;
+    DeltaRotation = FRotator(0.0f, -140.0f, 0.0f);
 }
 
 void ASecurityCameraActor::BeginPlay()
 {
     Super::BeginPlay();
 
+    StartRotation = GetActorRotation();
+    TargetRotation = StartRotation + DeltaRotation;
+
     if ((CapsuleComp = FindComponentByClass<UCapsuleComponent>()) != nullptr)
     {
         CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &ASecurityCameraActor::OnBeginOverlap);
     }
+
+     if (CurveFloat)
+    {
+        FOnTimelineFloat TimelineProgress;
+        TimelineProgress.BindUFunction(this, FName("TimelineProgress"));
+
+        CurveFTimeline.AddInterpFloat(CurveFloat, TimelineProgress);
+        CurveFTimeline.SetLooping(true);
+
+
+        CurveFTimeline.PlayFromStart();
+    }
 }
+
 
 void ASecurityCameraActor::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    // Rotar la cámara
-    FRotator NewRotation = GetActorRotation();
-    NewRotation.Yaw += RotationSpeed * DeltaTime;
-    SetActorRotation(NewRotation);
+    CurveFTimeline.TickTimeline(DeltaTime);
 }
 
 void ASecurityCameraActor::OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
@@ -48,4 +63,14 @@ void ASecurityCameraActor::OnBeginOverlap(UPrimitiveComponent *OverlappedCompone
     }
 
     UE_LOG(LogTemp, Warning, TEXT("Superposición detectada con la cápsula"));
+}
+
+void ASecurityCameraActor::TimelineProgress(float value)
+{
+
+    // Aplicar una interpolación lineal entre la rotación inicial y la rotación intermedia
+    FRotator NewRotator = FMath::Lerp(StartRotation, TargetRotation, value);
+
+    // Establecer la rotación del actor con la rotación interpolada
+    SetActorRotation(NewRotator);
 }
