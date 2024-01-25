@@ -2,7 +2,8 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Actor.h"
 #include "Components/TimelineComponent.h"
-#include "Engine/World.h"
+#include "PrisonerCharacter.h"
+#include "EscapeMasterGameMode.h"
 
 ASecurityCameraActor::ASecurityCameraActor()
 {
@@ -27,7 +28,7 @@ void ASecurityCameraActor::BeginPlay()
         CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &ASecurityCameraActor::OnBeginOverlap);
     }
 
-     if (CurveFloat)
+    if (CurveFloat)
     {
         FOnTimelineFloat TimelineProgress;
         TimelineProgress.BindUFunction(this, FName("TimelineProgress"));
@@ -35,11 +36,9 @@ void ASecurityCameraActor::BeginPlay()
         CurveFTimeline.AddInterpFloat(CurveFloat, TimelineProgress);
         CurveFTimeline.SetLooping(true);
 
-
         CurveFTimeline.PlayFromStart();
     }
 }
-
 
 void ASecurityCameraActor::Tick(float DeltaTime)
 {
@@ -50,27 +49,21 @@ void ASecurityCameraActor::Tick(float DeltaTime)
 
 void ASecurityCameraActor::OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
-    UWorld *World = GetWorld();
-
-    if (World)
+    APrisonerCharacter* PrisonerCharacter = Cast<APrisonerCharacter>(OtherActor);
+    if (PrisonerCharacter)
     {
-        Detected = CreateWidget<UUserWidget>(World, DetectedScreenClass);
+        AEscapeMasterGameMode* GameMode = Cast<AEscapeMasterGameMode>(GetWorld()->GetAuthGameMode());
 
-        if (Detected)
+        if (GameMode)
         {
-            Detected->AddToViewport();
+            GameMode->PlayerDetected();
         }
     }
-
-    UE_LOG(LogTemp, Warning, TEXT("Superposición detectada con la cápsula"));
 }
+
 
 void ASecurityCameraActor::TimelineProgress(float value)
 {
-
-    // Aplicar una interpolación lineal entre la rotación inicial y la rotación intermedia
     FRotator NewRotator = FMath::Lerp(StartRotation, TargetRotation, value);
-
-    // Establecer la rotación del actor con la rotación interpolada
     SetActorRotation(NewRotator);
 }

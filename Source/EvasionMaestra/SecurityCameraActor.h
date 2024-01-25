@@ -13,6 +13,9 @@
 
 class UCurveFloat;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDetectedDelegate);
+
+
 UCLASS()
 class EVASIONMAESTRA_API ASecurityCameraActor : public AActor
 {
@@ -29,6 +32,8 @@ public:
 	UFUNCTION()
 	void TimelineProgress(float value);
 
+	UPROPERTY(BlueprintAssignable, Category = "Security Camera")
+    FPlayerDetectedDelegate OnPlayerDetected;
 
 protected:
 	// Called when the game starts or when spawned
@@ -38,9 +43,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Timeline")
 	UCurveFloat* CurveFloat;
-
-	UPROPERTY( EditAnywhere, Category ="Timeline")
-	float ZOffset;
 
 private:
 

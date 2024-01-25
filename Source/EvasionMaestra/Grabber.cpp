@@ -68,9 +68,9 @@ void UGrabber::GrabObject()
 				{
 					if (Hit.GetActor()->ActorHasTag("tablet1"))
 					{
+						bIsGrabbing = true;
 						CanHackDoor = true;
 					}
-					
 					UE_LOG(LogTemp, Warning, TEXT("Objeto agarrado: %s"), *GrabbedObject->GetName());
 				}
 				else
@@ -100,6 +100,9 @@ void UGrabber::ReleaseObject()
 
 		// Reinicia la referencia al objeto agarrado
 		GrabbedObject = nullptr;
+
+		CanHackDoor = false;
+		bIsGrabbing = false;
 
 		UE_LOG(LogTemp, Warning, TEXT("Objeto liberado"));
 	}

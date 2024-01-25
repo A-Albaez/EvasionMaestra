@@ -8,7 +8,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Components/SphereComponent.h"
-
 #include "Grabber.h" 
 
 
@@ -31,7 +30,6 @@ APrisonerCharacter::APrisonerCharacter()
 void APrisonerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 	// Add Input Mapping Context
 	if (APlayerController *PlayerController = Cast<APlayerController>(Controller))
 	{

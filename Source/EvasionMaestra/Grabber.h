@@ -53,6 +53,9 @@ private:
 	// The distance to grab objects
 	float GrabDistance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grab", meta = (AllowPrivateAccess = "true"))
+	bool bIsGrabbing;
+
 	void UpdateHandReference();
 	USkeletalMeshComponent* Hand;
 
