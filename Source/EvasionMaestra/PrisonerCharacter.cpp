@@ -69,12 +69,24 @@ void APrisonerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APrisonerCharacter::Look);
 
+		//Jumping
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &APrisonerCharacter::CustomJump);
+
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
 
+}
+
+void APrisonerCharacter::CustomJump(const FInputActionValue& Value)
+{
+    if (Value.Get<bool>())
+    {
+        // Call the built-in Jump function
+        Super::Jump();
+    }
 }
 
 void APrisonerCharacter::Move(const FInputActionValue &Value)

@@ -38,7 +38,7 @@ public:
 
 	const FName RightHandSocketName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	bool CanHackDoor;
 
 protected:

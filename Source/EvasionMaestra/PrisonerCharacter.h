@@ -27,6 +27,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -38,6 +39,10 @@ public:
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
+
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* JumpAction;
 
 	UPROPERTY(EditAnywhere)
     class UGrabber* GrabberComponent;
@@ -55,5 +60,7 @@ protected:
 	void Move(const FInputActionValue& Value);
 
     void Look(const FInputActionValue &Value);
+
+	void CustomJump(const FInputActionValue &Value);
 
 };
