@@ -15,9 +15,21 @@ class EVASIONMAESTRA_API UGameSave : public USaveGame
 	GENERATED_BODY()
 	
 public:
-    UPROPERTY(VisibleAnywhere, Category = Basic)
+    UPROPERTY(VisibleAnywhere, Category = "Level")
     int32 CurrentLevel;
+    
+    UPROPERTY(VisibleAnywhere, Category = "Level")
+    FString LastPlayedLevelName;
 
     UPROPERTY(VisibleAnywhere)
     FVector PlayerLocation;
+
+     UPROPERTY(VisibleAnywhere, Category = "Grabber")
+    TSubclassOf<AActor> GrabbedObjectType;
+
+    UPROPERTY(VisibleAnywhere, Category = "Grabber")
+    FVector GrabbedObjectLocation;
+
+    UPROPERTY(VisibleAnywhere, Category = "Grabber")
+    FRotator GrabbedObjectRotation;
 };

@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "GameFramework/Actor.h"
 #include "Components/SkeletalMeshComponent.h"
+
 #include "Grabber.generated.h"
 
 class APrisonerCharacter;
@@ -41,15 +42,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	bool CanHackDoor;
 
+	// The grabbed object
+	UPROPERTY(VisibleAnywhere, Category = "Grabber")
+	AActor* GrabbedObject;
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
-
-	// The grabbed object
-	AActor* GrabbedObject;
-
 	// The distance to grab objects
 	float GrabDistance;
 

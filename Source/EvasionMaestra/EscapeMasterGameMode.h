@@ -11,6 +11,10 @@
 /**
  * 
  */
+
+
+class APrisonerCharacter;
+
 UCLASS()
 class EVASIONMAESTRA_API AEscapeMasterGameMode : public AGameModeBase
 {
@@ -19,12 +23,16 @@ class EVASIONMAESTRA_API AEscapeMasterGameMode : public AGameModeBase
 public:
     void BeginPlay();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
     void PlayerDetected();
 
     void ShowCompletedWidget();
 
     void HandleLevelCompletion();
+
+	class APrisonerCharacter* PrisonerCharacter;
+
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 private:
 

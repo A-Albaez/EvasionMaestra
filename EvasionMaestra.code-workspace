@@ -11,32 +11,7 @@
 	],
 	"settings": {
 		"typescript.tsc.autoDetect": "off",
-		"npm.autoDetect": "off",
-		"files.associations": {
-			"*.ipp": "cpp",
-			"__bit_reference": "cpp",
-			"__node_handle": "cpp",
-			"atomic": "cpp",
-			"bitset": "cpp",
-			"deque": "cpp",
-			"__memory": "cpp",
-			"limits": "cpp",
-			"locale": "cpp",
-			"optional": "cpp",
-			"ratio": "cpp",
-			"regex": "cpp",
-			"system_error": "cpp",
-			"tuple": "cpp",
-			"type_traits": "cpp",
-			"vector": "cpp",
-			"algorithm": "cpp",
-			"chrono": "cpp",
-			"complex": "cpp",
-			"functional": "cpp",
-			"xlocmon": "cpp",
-			"xtr1common": "cpp",
-			"xutility": "cpp"
-		}
+		"npm.autoDetect": "off"
 	},
 	"extensions": {
 		"recommendations": [

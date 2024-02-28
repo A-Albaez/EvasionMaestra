@@ -123,8 +123,3 @@ void APrisonerCharacter::Look(const FInputActionValue &Value)
 	}
 }
 
-
-void APrisonerCharacter::HackDoor()
-{
-
-}

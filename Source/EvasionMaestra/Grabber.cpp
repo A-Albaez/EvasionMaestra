@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Grabber.h"
+#include "GameSave.h"
+#include "Kismet/GameplayStatics.h"
 #include "PrisonerCharacter.h"
 
 // Sets default values for this component's properties
@@ -48,7 +50,7 @@ void UGrabber::GrabObject()
 		Params.AddIgnoredActor(GetOwner());
 
 		// Use SphereTraceSingle to check for objects within the specified radius
-		float SphereRadius = 150.0f; // Ajusta este radio según tus requisitos
+		float SphereRadius = 150.0f;
 		if (GetWorld()->SweepSingleByChannel(Hit, Start, Start, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(SphereRadius), Params))
 		{
 			// Check if the hit result has the Grabbable component
@@ -83,12 +85,28 @@ void UGrabber::GrabObject()
 				UE_LOG(LogTemp, Warning, TEXT("Objeto no tiene el tag grabbable: %s"), *Hit.GetActor()->GetName());
 			}
 		}
+
+		UGameSave *GameSave = Cast<UGameSave>(UGameplayStatics::CreateSaveGameObject(UGameSave::StaticClass()));
+		if (GameSave)
+		{
+			if (GrabbedObject)
+			{
+				GameSave->GrabbedObjectType = GrabbedObject->GetClass();
+				GameSave->GrabbedObjectLocation = GrabbedObject->GetActorLocation();
+				GameSave->GrabbedObjectRotation = GrabbedObject->GetActorRotation();
+				// Guardar el juego
+				UGameplayStatics::SaveGameToSlot(GameSave, TEXT("NombreDelSlot"), 0);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("GrabbedObject es nulo"));
+			}
+		}
 	}
 }
 
 void UGrabber::ReleaseObject()
 {
-	// Verifica si hay un objeto agarrado
 	if (GrabbedObject)
 	{
 		// Habilita la simulación física del objeto
@@ -105,6 +123,13 @@ void UGrabber::ReleaseObject()
 		bIsGrabbing = false;
 
 		UE_LOG(LogTemp, Warning, TEXT("Objeto liberado"));
+
+		if (UGameSave *GameSave = Cast<UGameSave>(UGameplayStatics::LoadGameFromSlot(TEXT("NombreDelSlot"), 0)))
+		{
+			GameSave->GrabbedObjectType = nullptr;
+			// Guardar el juego
+			UGameplayStatics::SaveGameToSlot(GameSave, TEXT("NombreDelSlot"), 0);
+		}
 	}
 	else
 	{

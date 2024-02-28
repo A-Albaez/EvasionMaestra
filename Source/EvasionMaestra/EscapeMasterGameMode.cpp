@@ -2,6 +2,9 @@
 
 #include "EscapeMasterGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameSave.h"
+#include "PrisonerCharacter.h"
+#include "Grabber.h"
 #include "EscapeMasterPlayerController.h"
 
 void AEscapeMasterGameMode::BeginPlay()
@@ -11,10 +14,24 @@ void AEscapeMasterGameMode::BeginPlay()
     AEscapeMasterPlayerController *PlayerController = Cast<AEscapeMasterPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
     if (PlayerController)
     {
-        PlayerController->LoadGameOnStart();
+        PlayerController->LoadGameProgress();
     }
     World = GetWorld();
 }
+
+void AEscapeMasterGameMode::PostLogin(APlayerController* NewPlayer)
+{
+    Super::PostLogin(NewPlayer);
+
+    // Carga el progreso del juego para el nuevo jugador
+    AEscapeMasterPlayerController* PlayerController = Cast<AEscapeMasterPlayerController>(NewPlayer);
+    if (PlayerController)
+    {
+        PlayerController->LoadGameProgress();
+    }
+}
+
+
 
 void AEscapeMasterGameMode::PlayerDetected()
 {
@@ -46,10 +63,10 @@ void AEscapeMasterGameMode::HandleLevelCompletion()
     {
         // Nombre del siguiente nivel
         FString NextLevelName = "Level2";
-
         UGameplayStatics::OpenLevel(World, *NextLevelName, false);
     }
 }
+
 
 void AEscapeMasterGameMode::ShowDetectedWidget()
 {
