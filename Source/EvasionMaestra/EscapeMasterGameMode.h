@@ -12,9 +12,6 @@
  * 
  */
 
-
-class APrisonerCharacter;
-
 UCLASS()
 class EVASIONMAESTRA_API AEscapeMasterGameMode : public AGameModeBase
 {
@@ -30,11 +27,18 @@ public:
 
     void HandleLevelCompletion();
 
-	class APrisonerCharacter* PrisonerCharacter;
+	UFUNCTION(BlueprintCallable)
+    void ShowLoadingScreen();
+	
+	bool bGameProgressLoaded;
+	bool bLoadingInProgress;
 
-	virtual void PostLogin(APlayerController* NewPlayer) override;
+
+	void OpenLevelAndHideLoadingScreen();
+
 
 private:
+
 
     UWorld* World;
 
@@ -50,7 +54,16 @@ private:
 	UPROPERTY()
 	UUserWidget *Completed;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> LoadingScreenClass;
+	
+	UUserWidget *LoadingScreen;
+
 protected:
+	UFUNCTION(BlueprintCallable)
+    void HideLoadingScreen();
+
+    void HideWidgets();
     void ShowDetectedWidget();
     void HandleDetectionOutcome();
 };

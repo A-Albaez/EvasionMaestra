@@ -32,4 +32,7 @@ public:
 
     UPROPERTY(VisibleAnywhere, Category = "Grabber")
     FRotator GrabbedObjectRotation;
+
+    UPROPERTY(BlueprintReadWrite)
+    bool bLevelRestarted;
 };

@@ -6,20 +6,15 @@
 #include "Grabber.h"
 #include "EscapeMasterGameMode.h"
 #include "GameSave.h"
-#include "GameFramework/PlayerStart.h" 
-
 
 void AEscapeMasterPlayerController::BeginPlay()
 {
     Super::BeginPlay();
-    
-    // Load game progress when the game starts
-    LoadGameProgress();
 }
 
 void AEscapeMasterPlayerController::LevelCompleted()
 {
-    UGameSave* GameSaveInstance = Cast<UGameSave>(UGameplayStatics::CreateSaveGameObject(UGameSave::StaticClass()));
+    UGameSave *GameSaveInstance = Cast<UGameSave>(UGameplayStatics::CreateSaveGameObject(UGameSave::StaticClass()));
     if (!GameSaveInstance)
     {
         // Log an error if failed to load the saved game
@@ -47,7 +42,7 @@ void AEscapeMasterPlayerController::LevelCompleted()
     }
 }
 
-void AEscapeMasterPlayerController::SaveGameProgress(UGameSave* GameSaveInstance)
+void AEscapeMasterPlayerController::SaveGameProgress(UGameSave *GameSaveInstance)
 {
     if (GameSaveInstance)
     {
@@ -67,46 +62,74 @@ void AEscapeMasterPlayerController::SaveGameProgress(UGameSave* GameSaveInstance
 
         // Save Game
         UGameplayStatics::SaveGameToSlot(GameSaveInstance, TEXT("SaveSlotName"), 0);
+        UE_LOG(LogTemp, Warning, TEXT("saved game"));
+
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("saved game failed in SaveGameProgress"));
     }
 }
 
-void AEscapeMasterPlayerController::LoadGameProgress()
+void AEscapeMasterPlayerController::LoadGameProgress(TFunction<void(bool)> OnLoadCompleted)
 {
-    // Load the saved game from the slot
-    UGameSave* GameSaveInstance = Cast<UGameSave>(UGameplayStatics::LoadGameFromSlot(TEXT("SaveSlotName"), 0));
-
-    if (GameSaveInstance)
+    if (UGameplayStatics::DoesSaveGameExist("SaveSlotName",0))
     {
-        // Retrieve game progress variables and apply them
-        CurrentLevel = GameSaveInstance->CurrentLevel;
-        FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
-
-        // Load the last played level
-        if (GameSaveInstance->LastPlayedLevelName.IsEmpty())
+        // Intenta cargar el archivo de guardado existente
+        if (UGameSave *GameSaveInstance = Cast<UGameSave>(UGameplayStatics::LoadGameFromSlot(TEXT("SaveSlotName"), 0)))
         {
-            // Log a warning if no last played level is found
-            UE_LOG(LogTemp, Warning, TEXT("Last played level name is empty"));
-        }
-        else
-        {
-            UGameplayStatics::OpenLevel(GetWorld(), *GameSaveInstance->LastPlayedLevelName, true); // Change the true/false parameter as needed for seamless travel
-        }
+            UE_LOG(LogTemp, Warning, TEXT("Success to load the saved game"));
 
-        // Move the existing grabbed object if exists
-        if (PrisonerCharacter && PrisonerCharacter->GrabberComponent && GameSaveInstance->GrabbedObjectType)
-        {
-            // Get the existing object that the player is grabbing
-            AActor* GrabbedObject = PrisonerCharacter->GrabberComponent->GrabbedObject;
+            // Game save loaded successfully
+            bool bSuccess = true;
+            UE_LOG(LogTemp, Warning, TEXT("bSuccess Value: %d"), bSuccess);
 
-            // If there is an existing grabbed object, move it to the saved location
-            if (GrabbedObject)
+            // Retrieve game progress variables and apply them
+            CurrentLevel = GameSaveInstance->CurrentLevel;
+            FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
+
+            // Load the last played level
+            if (!GameSaveInstance->LastPlayedLevelName.IsEmpty() && CurrentLevelName != *GameSaveInstance->LastPlayedLevelName)
             {
-                GrabbedObject->SetActorLocation(GameSaveInstance->GrabbedObjectLocation);
-                GrabbedObject->SetActorRotation(GameSaveInstance->GrabbedObjectRotation);
+                UGameplayStatics::OpenLevel(GetWorld(), *GameSaveInstance->LastPlayedLevelName, true);
+                // Reset bLevelRestarted
+                GameSaveInstance->bLevelRestarted = true;
+                UE_LOG(LogTemp, Error, TEXT("bLevelRestarted Value: %d"), GameSaveInstance->bLevelRestarted);
             }
+
+            // Move the existing grabbed object if exists
+            if (PrisonerCharacter && PrisonerCharacter->GrabberComponent && GameSaveInstance->GrabbedObjectType)
+            {
+                // Get the existing object that the player is grabbing
+                auto GrabbedObject = PrisonerCharacter->GrabberComponent->GrabbedObject;
+
+                // If there is an exist grabbed object, move it to the saved location
+                if (GrabbedObject)
+                {
+                    GrabbedObject->SetActorLocation(GameSaveInstance->GrabbedObjectLocation);
+                    GrabbedObject->SetActorRotation(GameSaveInstance->GrabbedObjectRotation);
+                }
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("No grabbed object to restore"));
+            }
+
+            // Call the callback function with success status
+            OnLoadCompleted(true);
         }
         else
-             UE_LOG(LogTemp, Warning, TEXT("No grabbed object to restore"));
+        {
+            // Si el archivo de guardado no existe, informa del error
+            UE_LOG(LogTemp, Error, TEXT("Failed to load the saved game"));
+
+            // Call the callback function with failure status
+            OnLoadCompleted(false);
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("No existe un archivo de guardado en el slot "));
     }
 }
 

@@ -30,7 +30,7 @@ public:
     void SaveGameProgress(UGameSave *GameSaveInstance);
 
     // Load game progress when the game starts
-    void LoadGameProgress();
+    void LoadGameProgress(TFunction<void(bool)> OnLoadCompleted);
 
     // Show completed objective
     void PlayerCompletedObjective();
